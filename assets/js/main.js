@@ -51,9 +51,9 @@ if (pokemonList) {
 }
 
 // ==========================================
-// LÓGICA DA PÁGINA DE DETALHES (pokemon.html)
+// LÓGICA DO DISPLAY (pokemon.html)
 // ==========================================
-function loadPokemonDetails() {
+function loadPokemonDisplay() {
   const urlParams = new URLSearchParams(window.location.search);
   const pokemonId = urlParams.get('id');
 
@@ -61,34 +61,46 @@ function loadPokemonDetails() {
     pokeApi.getPokemonById(pokemonId).then((pokemon) => {
       document.title = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1) + " | Pokédex";
 
+      const pokemonNumber = String(pokemon.number).padStart(3, '0');
       const pokemonHtml = `
-      <div class="">
-          <a href="index.html">
-            <button class="">
-              <i class="bi bi-arrow-left"></i>
-            </button>
-          </a>
-        </div>
+      <div class="pokemon-container ${pokemon.type}">
 
-        <div class="pokemon-detail ${pokemon.type}">
-          <h1>${pokemon.name} (#${pokemon.number})</h1>
+          <div class="pokemonDetailsTopSection">
+            <a href="index.html">
+              <button>
+                <i class="bi bi-arrow-left"></i>
+              </button>
+            </a>
+          </div>
+
+          <div class="nameBesideId">
+            <div class="nameAndType">
+              <h1>${pokemon.name}</h1>
+              <ol class="types">
+                ${pokemon.types.map((type) => `
+                <li class="type ${type}">${type}</li>
+                `).join('')}
+              </ol>
+            </div>
+
+            <div class="id">
+              <h1>#${pokemonNumber}</h1>
+            </div>
+
+          </div>
+
           <img src="${pokemon.photo}" alt="${pokemon.name}" />
-          <ol class="types">
-            ${pokemon.types.map((type) => `
-            <li class="type ${type}">${type}</li>
-            `).join('')}
-          </ol>
+
         </div>
-      </div>
-            `;
+`;
       pokemonDisplay.innerHTML = pokemonHtml;
     });
   } else {
-    pokemonDisplay.innerHTML = "<p>Pokémon não encontrado.</p>";
+    pokemonDisplay.innerHTML = `<p>Pokémon não encontrado.</p>`;
   }
 }
 
 // Só executa se estiver na pokemon.html (onde o pokemonDisplay existe)
 if (pokemonDisplay) {
-  loadPokemonDetails();
+  loadPokemonDisplay();
 }
